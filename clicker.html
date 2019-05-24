@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <!-- redux -->
+    <script src="https://unpkg.com/redux@latest/dist/redux.min.js"></script>
+
+    <title>Redux Example</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 card"> Clicked: <span id="value"> 0 </span> times</div>
+        </div>
+        <div class="row">
+            <button id="increment" class="col-6 mb-1 mt-1 btn btn-primary">+</button>
+            <button id="decrement" class="col-6 mb-1 mt-1 btn btn-danger">-</button>
+        </div>
+        <div class="row">
+            <button id="incrementIfOdd" class="col-6 mb-1 btn btn-primary">Odd +</button>
+            <button id="decrementIfOdd" class="col-6 mb-1 btn btn-danger">Odd -</button>
+        </div>
+        <div class="row">
+            <button id="incrementIfEven" class="col-6 mb-1 btn btn-primary">Even +</button>
+            <button id="decrementIfEven" class="col-6 mb-1 btn btn-danger">Even -</button>
+        </div>
+        <div class="row">
+            <button id="incrementAsync" class="col-6 btn btn-primary">Async +</button>
+            <button id="decrementAsync" class="col-6 btn btn-danger">Async -</button>
+        </div>
+
+
+    </div>
+
+    <script>
+        const actions = {
+            INCREMNET: 'INCREMENT',
+            DECREMENT: 'DECREMENT',
+            INCREMENT_IF_ODD: 'INCREMENT_IF_ODD',
+            DECREMENT_IF_ODD: 'DECREMENT_IF_ODD',
+            INCREMENT_IF_EVEN: 'INCREMENT_IF_EVEN',
+            DECREMENT_IF_EVEN: 'DECREMENT_IF_EVEN',
+            INCREMENT_ASYNC: 'INCREMENT_ASYNC',
+            DECREMENT_ASYNC: 'DECREMENT_ASYNC'
+        }
+        function counter(state, action) {
+            if (typeof state == 'undefined') {
+                return 0;
+            }
+
+            function incremnet(count) { return count + 1; }
+
+            function decrement(count) {
+                if (count <= 0) {
+                    return count;
+                } else {
+                    return count - 1
+                }
+            }
+
+            function incrementIfOdd(count) {
+                if (count % 2 == 1) { return count + 1; } else { return count; }
+
+            }
+
+            function decrementIfOdd(count) {
+                if (state % 2 == 1) { return state - 1; } else { return state; }
+            }
+
+            function incrementIfEven(count) {
+                if (count % 2 == 0) { return count + 1; } else { return count; }
+            }
+
+            function decrementIfEven(count) {
+                if (state % 2 == 0) { return state - 1; } else { return state; }
+            }
+
+            switch (action.type) {
+                case actions.INCREMNET: return incremnet(state);
+                case actions.DECREMENT: return decrement(state);
+                case actions.INCREMENT_IF_ODD: return incrementIfOdd(state);
+                case actions.DECREMENT_IF_ODD: return decrementIfOdd(state);
+                case actions.INCREMENT_IF_EVEN: return incrementIfEven(state);
+                case actions.DECREMENT_IF_EVEN: return decrementIfEven(state);
+                case actions.INCREMENT_ASYNC: return incremnet(state);
+                case actions.DECREMENT_ASYNC: return decrement(state);
+                default: return state;
+            }
+
+        }
+        const store = Redux.createStore(counter);
+        const valueElement = document.getElementById('value');
+
+        function render() {
+            valueElement.innerHTML = store.getState().toString();
+        }
+        render()
+        store.subscribe(render);
+
+        document.getElementById('increment')
+            .addEventListener('click', function () {
+                store.dispatch({ type: actions.INCREMNET });
+            });
+        document.getElementById('decrement')
+            .addEventListener('click', function () {
+                store.dispatch({ type: actions.DECREMENT });
+            });
+        document.getElementById('incrementIfOdd')
+            .addEventListener('click', function () {
+                store.dispatch({ type: actions.INCREMENT_IF_ODD });
+            });
+
+        document.getElementById('decrementIfOdd')
+            .addEventListener('click', function () {
+                store.dispatch({ type: actions.DECREMENT_IF_ODD });
+            });
+        document.getElementById('incrementIfEven')
+            .addEventListener('click', function () {
+                store.dispatch({ type: actions.INCREMENT_IF_EVEN });
+            });
+        document.getElementById('decrementIfEven')
+            .addEventListener('click', function () {
+                store.dispatch({ type: actions.DECREMENT_IF_EVEN });
+            });
+        document.getElementById('incrementAsync')
+            .addEventListener('click', function () {
+                setTimeout(function () {
+                    store.dispatch({ type: actions.INCREMENT_ASYNC });
+                }, 1000);
+            });
+
+        document.getElementById('decrementAsync')
+            .addEventListener('click', function () {
+                setTimeout(function () {
+                    store.dispatch({ type: actions.DECREMENT_ASYNC });
+                }, 1000);
+            });
+
+
+    </script>
+</body>
+
+</html>
